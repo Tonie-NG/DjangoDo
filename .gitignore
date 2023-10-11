@@ -1,0 +1,39 @@
+# Ignore database files
+*.sqlite3
+*.db
+
+# Ignore static files
+static/
+
+# Ignore media files
+media/
+
+# Ignore virtual environment directories
+venv/
+__pycache__/
+
+# Ignore log files
+*.log
+
+# Ignore secret settings
+*.secret_key
+
+# Ignore environment-specific settings
+*.env
+
+# Ignore IDE-specific files and directories
+
+# Ignore local development settings
+*.local
+*.settings
+*.development
+
+# Ignore backup files
+*~
+
+# Ignore compiled Python files
+__pycache__/
+*.pyc
+
+# Ignore migrations, as they are managed by Django
+**/migrations/
