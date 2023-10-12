@@ -1,5 +1,6 @@
 from django.urls import path
-from todo_app.api.views import Task, Tasks, Signup, Login
+from todo_app.api.authview import Signup, Login
+from todo_app.api.views import Task, Tasks
 
 urlpatterns = [
     path('signup/', Signup.as_view(), name='signup'),

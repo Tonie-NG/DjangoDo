@@ -1,62 +1,36 @@
 from todo_app.models import Todo, User
-from todo_app.api.serializers import TodoSerializer, UserSerializer
+from todo_app.api.serializers import TodoSerializer
+from todo_app.api.utilities import Sendresponse
 from rest_framework.views import APIView
 from rest_framework import status
-from todo_app.api.utilities import Sendresponse, generate_access_token
-from django.contrib.auth.hashers import make_password, check_password
+import jwt
 
-class Signup(APIView):
-    def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            email = serializer.validated_data.get('email')
-            if User.objects.filter(email=email).exists():
-                status_code = status.HTTP_409_CONFLICT
-                message = f"User with {email} already exists"
-                response = Sendresponse(False, status_code, message, "")
-                return (response)
-            serializer.save(password=make_password(serializer.validated_data.get('password')))
-            status_code = status.HTTP_201_CREATED
-            message = "User created"
-            response = Sendresponse(True, status_code, "The user has been successfully registered", "")
-            return (response)
-        else:
-            status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-            message = "Internal server error"
-            response = Sendresponse(False, status_code, message, serializer.errors)
-            return (response)
-
-class Login(APIView):
-    def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        user_name = serializer.validated_data.get('username')
-        pass_word = serializer.validated_data.get('password')
-        # check if user exists in the database
-        try:
-            logged_user = User.objects.get(username=user_name)
-        except Exception as e:
-            status_code = status.HTTP_401_UNAUTHORIZED
-            message = "Login error"
-            response = Sendresponse(False, status_code, message, str(e))
-            return (response)
-        password_check = check_password(pass_word, logged_user.password)
-        if password_check:
-            token = generate_access_token(logged_user)
-            status_code = status.HTTP_200_OK
-            message = "Login successful"
-            response = Sendresponse(True, status_code, message, logged_user)
-            response.set_cookie('access_token', value=token, httponly=True)
-            return (response)
-        else:
-            status_code = status.HTTP_401_UNAUTHORIZED
-            message = "Invalid credentials"
-            response = Sendresponse(False, status_code, message, serializer.errors)
-            return (response)
 
 class Tasks(APIView):
     # get request
     def get(self, request):
-        tasks = Todo.objects.all()
+        token = request.COOKIES.get('access_token')
+        if not token:
+            response = Sendresponse(False, status.HTTP_401_UNAUTHORIZED, "You're not Logged in", "")
+            return response
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except Exception as e:
+            response = Sendresponse(False, status.HTTP_401_UNAUTHORIZED, "Invalid credentials", str(e))
+            return (response)
+        serializer = TodoSerializer(data=request.data)
+        try:
+            logged_user = User.objects.get(id=payload['user_id'])
+        except Exception as e:
+            response = Sendresponse(False, status.HTTP_404_NOT_FOUND, "NOt found", str(e))
+            return response
+
+        tasks = Todo.objects.filter(user=logged_user)
+        if not tasks:
+            message = "User has no tasks"
+            status_code = status.HTTP_204_NO_CONTENT
+            response = Sendresponse(True, status_code, message, [])
+            return response
         serializer = TodoSerializer(tasks, many=True)
         message = "Successfully fetched all tasks"
         status_code = status.HTTP_200_OK
@@ -65,9 +39,23 @@ class Tasks(APIView):
 
     # post request
     def post(self, request):
+        token = request.COOKIES.get('access_token')
+        if not token:
+            response = Sendresponse(False, status.HTTP_401_UNAUTHORIZED, "You're not Login", "")
+            return response
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except Exception as e:
+            response = Sendresponse(False, status.HTTP_401_UNAUTHORIZED, "Invalid credentials", str(e))
+            return (response)
         serializer = TodoSerializer(data=request.data)
+        try:
+            logged_user = User.objects.get(id=payload['user_id'])
+        except Exception as e:
+            response = Sendresponse(False, status.HTTP_404_NOT_FOUND, "NOt found", str(e))
+            return response
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user=logged_user)
             message = "Successfully created a new task"
             status_code = status.HTTP_201_CREATED
             response = Sendresponse(True, status_code, message, serializer.data)
@@ -81,6 +69,21 @@ class Tasks(APIView):
 # single class
 class Task(APIView):
     def get(self, request, pk):
+        token = request.COOKIES.get('access_token')
+        if not token:
+            response = Sendresponse(False, status.HTTP_401_UNAUTHORIZED, "You're not Logged in", "")
+            return response
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except Exception as e:
+            response = Sendresponse(False, status.HTTP_401_UNAUTHORIZED, "Invalid credentials", str(e))
+            return (response)
+        serializer = TodoSerializer(data=request.data)
+        try:
+            logged_user = User.objects.get(id=payload['user_id'])
+        except Exception as e:
+            response = Sendresponse(False, status.HTTP_404_NOT_FOUND, "NOt found", str(e))
+            return response
         try:
             task = Todo.objects.get(pk=pk)
         except Todo.DoesNotExist:
@@ -88,6 +91,12 @@ class Task(APIView):
             message = f"Task with id {pk} not found"
             response = Sendresponse(False, status_code, message, "")
             return (response)
+        if task.user != logged_user:
+            message = "You're not the owner of this task"
+            status_code = status.HTTP_204_NO_CONTENT
+            response = Sendresponse(True, status_code, message, [])
+            return response
+
         serializer = TodoSerializer(task)
         status_code = status.HTTP_200_OK
         message = "Successfully fetched a task"

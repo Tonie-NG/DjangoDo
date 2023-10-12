@@ -5,14 +5,13 @@ from datetime import datetime, timedelta
 def Sendresponse(status:bool, status_code:int, message:str, data=None):
     response = {
         "status": status,
-        "status_code": status_code,
         "message": message,
     }
 
     if data is not None:
         response["data"] = data
 
-    return Response(response)
+    return Response(response, status=status_code)
 
 def generate_access_token(user):
     payload = {
