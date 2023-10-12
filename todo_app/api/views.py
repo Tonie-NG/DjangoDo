@@ -104,14 +104,42 @@ class Task(APIView):
         return (response)
 
     def put(self, request, pk):
-        task = Todo.objects.get(pk=pk)
-        serializer = TodoSerializer(task, data=request.data)
+        token = request.COOKIES.get('access_token')
+        if not token:
+            response = Sendresponse(False, status.HTTP_401_UNAUTHORIZED, "You're not Logged in", "")
+            return response
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except Exception as e:
+            response = Sendresponse(False, status.HTTP_401_UNAUTHORIZED, "Invalid credentials", str(e))
+            return (response)
+        serializer = TodoSerializer(data=request.data)
         if serializer.is_valid():
+            try:
+                logged_user = User.objects.get(id=payload['user_id'])
+            except Exception as e:
+                response = Sendresponse(False, status.HTTP_404_NOT_FOUND, "NOt found", str(e))
+                return response
+            try:
+                task = Todo.objects.get(pk=pk)
+            except Todo.DoesNotExist:
+                status_code = status.HTTP_404_NOT_FOUND
+                message = f"Task with id {pk} not found"
+                response = Sendresponse(False, status_code, message, "")
+                return (response)
+            if task.user != logged_user:
+                message = "You're not the owner of this task"
+                status_code = status.HTTP_204_NO_CONTENT
+                response = Sendresponse(True, status_code, message, [])
+                return response
+
+            # serializer = TodoSerializer(task)
             serializer.save()
             status_code = status.HTTP_200_OK
             message = f"Successfully updated task with an id of {pk}"
             response = Sendresponse(True, status_code, message, serializer.data)
             return (response)
+
         else:
             status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
             message = "Internal server error"
@@ -119,7 +147,33 @@ class Task(APIView):
             return (response)
 
     def delete(self, request, pk):
-        task = Todo.objects.get(pk=pk)
+        token = request.COOKIES.get('access_token')
+        if not token:
+            response = Sendresponse(False, status.HTTP_401_UNAUTHORIZED, "You're not Logged in", "")
+            return response
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except Exception as e:
+            response = Sendresponse(False, status.HTTP_401_UNAUTHORIZED, "Invalid credentials", str(e))
+            return (response)
+
+        try:
+            logged_user = User.objects.get(id=payload['user_id'])
+        except Exception as e:
+            response = Sendresponse(False, status.HTTP_404_NOT_FOUND, "NOt found", str(e))
+            return response
+        try:
+            task = Todo.objects.get(pk=pk)
+        except Todo.DoesNotExist:
+            status_code = status.HTTP_404_NOT_FOUND
+            message = f"Task with id {pk} not found"
+            response = Sendresponse(False, status_code, message, "")
+            return (response)
+        if task.user != logged_user:
+            message = "You're not the owner of this task"
+            status_code = status.HTTP_204_NO_CONTENT
+            response = Sendresponse(True, status_code, message, [])
+            return response
         task.delete()
         status_code = status.HTTP_204_NO_CONTENT
         message = f"Successfully deleted task with an id of {pk}"
@@ -127,14 +181,42 @@ class Task(APIView):
         return (response)
 
     def patch(self, request, pk):
-        task = Todo.objects.get(pk=pk)
-        serializer = TodoSerializer(task, data=request.data, partial=True)
+        token = request.COOKIES.get('access_token')
+        if not token:
+            response = Sendresponse(False, status.HTTP_401_UNAUTHORIZED, "You're not Logged in", "")
+            return response
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except Exception as e:
+            response = Sendresponse(False, status.HTTP_401_UNAUTHORIZED, "Invalid credentials", str(e))
+            return (response)
+        serializer = TodoSerializer(data=request.data, partial=True)
         if serializer.is_valid():
+            try:
+                logged_user = User.objects.get(id=payload['user_id'])
+            except Exception as e:
+                response = Sendresponse(False, status.HTTP_404_NOT_FOUND, "NOt found", str(e))
+                return response
+            try:
+                task = Todo.objects.get(pk=pk)
+            except Todo.DoesNotExist:
+                status_code = status.HTTP_404_NOT_FOUND
+                message = f"Task with id {pk} not found"
+                response = Sendresponse(False, status_code, message, "")
+                return (response)
+            if task.user != logged_user:
+                message = "You're not the owner of this task"
+                status_code = status.HTTP_204_NO_CONTENT
+                response = Sendresponse(True, status_code, message, [])
+                return response
+
+            # serializer = TodoSerializer(task)
             serializer.save()
             status_code = status.HTTP_200_OK
             message = f"Successfully updated task with an id of {pk}"
             response = Sendresponse(True, status_code, message, serializer.data)
             return (response)
+
         else:
             status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
             message = "Internal server error"
