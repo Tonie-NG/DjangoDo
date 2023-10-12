@@ -41,7 +41,7 @@ class Tasks(APIView):
     def post(self, request):
         token = request.COOKIES.get('access_token')
         if not token:
-            response = Sendresponse(False, status.HTTP_401_UNAUTHORIZED, "You're not Login", "")
+            response = Sendresponse(False, status.HTTP_401_UNAUTHORIZED, "You're not Logged in", "")
             return response
         try:
             payload = jwt.decode(token, 'secret', algorithms=['HS256'])
@@ -82,7 +82,7 @@ class Task(APIView):
         try:
             logged_user = User.objects.get(id=payload['user_id'])
         except Exception as e:
-            response = Sendresponse(False, status.HTTP_404_NOT_FOUND, "NOt found", str(e))
+            response = Sendresponse(False, status.HTTP_404_NOT_FOUND, "Not found", str(e))
             return response
         try:
             task = Todo.objects.get(pk=pk)
