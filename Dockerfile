@@ -7,6 +7,8 @@ WORKDIR /app
 
 COPY . /app
 
+RUN apk add --no-cache sqlite
+
 RUN pip install --no-cache-dir -r requirements.txt
 
 RUN python manage.py makemigrations
