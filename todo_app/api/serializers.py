@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from todo_app.models import Todo
+from todo_app.models import Todo, User
 
 class TodoSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
@@ -21,3 +21,9 @@ class TodoSerializer(serializers.Serializer):
         instance.save()
 
         return (instance)
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'password', 'email')
+        read_only_fields = ('id')

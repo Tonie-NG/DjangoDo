@@ -1,10 +1,58 @@
-from todo_app.models import Todo
-from todo_app.api.serializers import TodoSerializer
+from todo_app.models import Todo, User
+from todo_app.api.serializers import TodoSerializer, UserSerializer
 from rest_framework.views import APIView
 from rest_framework import status
-from todo_app.api.utilities import Sendresponse
+from todo_app.api.utilities import Sendresponse, generate_access_token
+from django.contrib.auth.hashers import make_password, check_password
 
-# multiple classes
+class Signup(APIView):
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data.get('email')
+            if User.objects.filter(email=email).exists():
+                status_code = status.HTTP_409_CONFLICT
+                message = f"User with {email} already exists"
+                response = Sendresponse(False, status_code, message, "")
+                return (response)
+            serializer.save(password=make_password(serializer.validated_data.get('password')))
+            status_code = status.HTTP_201_CREATED
+            message = "User created"
+            response = Sendresponse(True, status_code, "The user has been successfully registered", "")
+            return (response)
+        else:
+            status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+            message = "Internal server error"
+            response = Sendresponse(False, status_code, message, serializer.errors)
+            return (response)
+
+class Login(APIView):
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        user_name = serializer.validated_data.get('username')
+        pass_word = serializer.validated_data.get('password')
+        # check if user exists in the database
+        try:
+            logged_user = User.objects.get(username=user_name)
+        except Exception as e:
+            status_code = status.HTTP_401_UNAUTHORIZED
+            message = "Login error"
+            response = Sendresponse(False, status_code, message, str(e))
+            return (response)
+        password_check = check_password(pass_word, logged_user.password)
+        if password_check:
+            token = generate_access_token(logged_user)
+            status_code = status.HTTP_200_OK
+            message = "Login successful"
+            response = Sendresponse(True, status_code, message, logged_user)
+            response.set_cookie('access_token', value=token, httponly=True)
+            return (response)
+        else:
+            status_code = status.HTTP_401_UNAUTHORIZED
+            message = "Invalid credentials"
+            response = Sendresponse(False, status_code, message, serializer.errors)
+            return (response)
+
 class Tasks(APIView):
     # get request
     def get(self, request):

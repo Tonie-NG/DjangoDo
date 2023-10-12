@@ -3,17 +3,24 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from datetime import datetime
 
+class User(models.Model):
+    id = models.AutoField(primary_key=True)
+    username = models.CharField(max_length=200, null=False, unique=True)
+    email = models.CharField(max_length=200, null=False)
+    password = models.CharField(max_length=200, null=False)
+
+    def __str__(self):
+        return self.username
 
 class Todo(models.Model):
-    # user = models.foreignkey(user, on_delete=models.cascade())
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=50)
-    description = models.CharField(max_length=200)
+    description = models.CharField(null=False, max_length=800)
     completed = models.BooleanField(default=False)
-    to_be_completed = models.DateField(validators=[MinValueValidator(limit_value=datetime.now().date())])
+    to_be_completed = models.DateField(validators=[MinValueValidator(limit_value=datetime.now().date())], null=False)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
 
     def __str__(self):
         return self.title
-# Create your models here.
