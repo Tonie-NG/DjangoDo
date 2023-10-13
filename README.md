@@ -42,15 +42,17 @@ _Note that the names `django-do` and `todo` are optional and you can replace it 
 ## API Endpoints
 
 - Tasks
-  `http://127.0.0.1:8000/tasks` - GET - Retrieve all tasks.
-  `http://127.0.0.1:8000/tasks` - POST - Create a new task.
+
+  - `http://127.0.0.1:8000/tasks` - GET - Retrieve all tasks.
+  - `http://127.0.0.1:8000/tasks` - POST - Create a new task.
 
 - Task
-  `http://127.0.0.1:8000/tasks/<id>` - GET - Retrieve a task using its id.
-  `http://127.0.0.1:8000/tasks/<id>` - PUT- Update a task using its id.
-  `http://127.0.0.1:8000/tasks/<id>` - PATCH- Update a task using its id.
-  `http://127.0.0.1:8000/tasks/<id>` - PUT- Delete a task using its id.
+
+  - `http://127.0.0.1:8000/tasks/<id>` - GET - Retrieve a task using its id.
+  - `http://127.0.0.1:8000/tasks/<id>` - PUT- Update a task using its id.
+  - `http://127.0.0.1:8000/tasks/<id>` - PATCH- Update a task using its id.
+  - `http://127.0.0.1:8000/tasks/<id>` - PUT- Delete a task using its id.
 
 - User
-  `http://127.0.0.1:8000/tasks/signup` - POST - Register a new user.
-  `http://127.0.0.1:8000/tasks/login` - POST - Login using you email, username and password.
+  - `http://127.0.0.1:8000/tasks/signup` - POST - Register a new user.
+  - `http://127.0.0.1:8000/tasks/login` - POST - Login using you email, username and password.
