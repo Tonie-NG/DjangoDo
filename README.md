@@ -55,4 +55,4 @@ _Note that the names `django-do` and `todo` are optional and you can replace it 
 
 - User
   - `http://127.0.0.1:8000/tasks/signup` - POST - Register a new user.
-  - `http://127.0.0.1:8000/tasks/login` - POST - Login using you email, username and password.
+  - `http://127.0.0.1:8000/tasks/login` - POST - Login using your email, username and password.
