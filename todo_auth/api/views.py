@@ -1,8 +1,8 @@
-from todo_app.models import User
-from todo_app.api.serializers import UserSerializer
+from todo_auth.models import User
+from todo_auth.api.serializers import UserSerializer
 from rest_framework.views import APIView
 from rest_framework import status
-from todo_app.api.utilities import Sendresponse, generate_access_token
+from utilities.response import Sendresponse, generate_access_token
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import IntegrityError
 

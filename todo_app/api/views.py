@@ -1,6 +1,7 @@
-from todo_app.models import Todo, User
+from todo_app.models import Todo
+from todo_auth.models import User
 from todo_app.api.serializers import TodoSerializer
-from todo_app.api.utilities import Sendresponse
+from utilities.response import Sendresponse
 from rest_framework.views import APIView
 from rest_framework import status
 import jwt

@@ -1,7 +1,6 @@
 from rest_framework.response import Response
 import jwt
 from datetime import datetime, timedelta
-from rest_framework import status
 
 def Sendresponse(status:bool, status_code:int, message:str, data=None):
     response = {
@@ -24,4 +23,3 @@ def generate_access_token(user):
     access_token = jwt.encode(payload, 'secret', algorithm='HS256')
 
     return (access_token)
-

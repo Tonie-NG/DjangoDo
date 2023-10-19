@@ -15,6 +15,8 @@ RUN python manage.py makemigrations
 
 RUN python manage.py makemigrations todo_app
 
+RUN python manage.py makemigrations todo_auth
+
 RUN python manage.py migrate
 
 EXPOSE 8000
