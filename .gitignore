@@ -27,6 +27,7 @@ __pycache__/
 *.local
 *.settings
 *.development
+localconfig.py
 
 # Ignore backup files
 *~
