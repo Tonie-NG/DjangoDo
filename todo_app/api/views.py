@@ -2,6 +2,7 @@ from todo_app.models import Todo
 from todo_auth.models import User
 from todo_app.api.serializers import TodoSerializer
 from utilities.response import Sendresponse
+from utilities.sendemail import send_email
 from rest_framework.views import APIView
 from rest_framework import status
 import jwt
@@ -31,7 +32,7 @@ class Tasks(APIView):
             message = "User has no tasks"
             status_code = status.HTTP_204_NO_CONTENT
             response = Sendresponse(True, status_code, message, [])
-            return response
+            return (response)
         serializer = TodoSerializer(tasks, many=True)
         message = "Successfully fetched all tasks"
         status_code = status.HTTP_200_OK
@@ -53,13 +54,18 @@ class Tasks(APIView):
         try:
             logged_user = User.objects.get(id=payload['user_id'])
         except Exception as e:
-            response = Sendresponse(False, status.HTTP_404_NOT_FOUND, "NOt found", str(e))
+            response = Sendresponse(False, status.HTTP_404_NOT_FOUND, "Not found", str(e))
             return response
         if serializer.is_valid():
             serializer.save(user=logged_user)
             message = "Successfully created a new task"
             status_code = status.HTTP_201_CREATED
             response = Sendresponse(True, status_code, message, serializer.data)
+            emessage = "Your task has been created"
+            esubject = "Task created"
+            ereceiver = ["victornwanochi@gmail.com"]
+            email_res_status = send_email(esubject, emessage, ereceiver)
+            print(email_res_status)
             return (response)
         else:
             status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
