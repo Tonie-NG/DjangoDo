@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'todo_auth',
     'rest_framework',
     'corsheaders',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    'celery',
+    'django_celery_results'
 ]
 
 MIDDLEWARE = [
@@ -134,3 +136,10 @@ EMAIL_HOST_PASSWORD = localconfig.EMAIL_HOST_PASSWORD
 EMAIL_PORT = localconfig.EMAIL_PORT
 EMAIL_USE_TLS = localconfig.EMAIL_USE_TLS
 EMAIL_BACKEND = localconfig.EMAIL_BACKEND
+
+
+CELERY_BROKER_URL = localconfig.CELERY_BROKER_URL
+
+CELERY_ACCEPT_CONTENT = ['json']
+
+CELERY_TASK_SERIALIZER = 'json'
