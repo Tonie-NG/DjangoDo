@@ -6,6 +6,8 @@ from utilities.sendemail import send_email
 from rest_framework.views import APIView
 from rest_framework import status
 import jwt
+from datetime import datetime
+# from celery.schedules import schedule
 
 
 class Tasks(APIView):
@@ -59,13 +61,17 @@ class Tasks(APIView):
         if serializer.is_valid():
             serializer.save(user=logged_user)
             message = "Successfully created a new task"
+            response_data = serializer.data
             status_code = status.HTTP_201_CREATED
-            response = Sendresponse(True, status_code, message, serializer.data)
+            response = Sendresponse(True, status_code, message, response_data)
             emessage = "Your task has been created"
             esubject = "Task created"
-            ereceiver = ["victornwanochi@gmail.com"]
-            email_res_status = send_email(esubject, emessage, ereceiver)
-            print(email_res_status)
+            ereceiver = [logged_user.email]
+            desired_datetime_str = response_data['to_be_completed']
+            desired_datetime = datetime.strptime(desired_datetime_str, '%Y-%m-%d')
+            desired_datetime = datetime.now()
+            send_email.apply_async((emessage, esubject, ereceiver), eta=desired_datetime)
+            print(response_data)
             return (response)
         else:
             status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
