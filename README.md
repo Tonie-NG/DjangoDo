@@ -24,7 +24,7 @@ git clone https://github.com/Tonie-NG/DjangoDo.git djangodo
 cd djangodo
 ```
 
-**Create a `.env` file in treh root directory and provide the following variables**
+**Create a `.env` and a `localconfig.py` file in the root directory and populate them with the following variables**
 
 ```
 EMAIL_HOST = 'smtp.gmail.com'
