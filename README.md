@@ -12,6 +12,7 @@ This is a simple to-do API built using the Django Rest Framework
 The easiest way to get this application up and running on your local machine is using docker. For that you'll need:
 
 - Docker
+- Docker Compose
 - Git
 
 ## Setup
@@ -19,20 +20,29 @@ The easiest way to get this application up and running on your local machine is 
 **Clone the Repository**
 
 ```
-git clone https://github.com/Tonie-NG/DjangoDo.git
-cd DjangoDo
+git clone https://github.com/Tonie-NG/DjangoDo.git djangodo
+cd djangodo
 ```
 
-**Build the image using Docker**
+**Create a `.env` file in treh root directory and provide the following variables**
 
 ```
-docker build -t djando-do .
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'youremailaddress'
+EMAIL_HOST_PASSWORD = 'your email app-password'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+
+CELERY_BROKER_URL = "redis://redis:6379/0" // or a url to your own redis instance
+
 ```
 
-**Run the contaienr from the image**
+**Build the and run the application using docker compose**
 
 ```
-docker run -p 8000:8000 --name todo my-django-app
+docker compose up
 ```
 
 This command will build the Docker image and start the container. The application will be accessible at http://127.0.0.1:8000/

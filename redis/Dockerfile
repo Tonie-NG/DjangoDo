@@ -1,3 +1,3 @@
 FROM redis:alpine
 
-RUN sysctl vm.overcommit_memory=1
+RUN sudo sysctl vm.overcommit_memory=1

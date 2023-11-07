@@ -10,7 +10,7 @@ services:
     ports:
       - "8000:8000"
     env_file:
-        - .env
+      - .env
     depends_on:
       - redis
   celery:
@@ -22,5 +22,6 @@ services:
       - django
       - redis
   redis:
-    build: ./redis
+    image: redis:alpine
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
     container_name: redis
