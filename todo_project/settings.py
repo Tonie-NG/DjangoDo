@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import localconfig
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +27,7 @@ SECRET_KEY = 'django-insecure-@$_8do#!_0z9t=rt&w9v3cw6=8im$6m4apc5f8x-lgk7u3ubid
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -44,7 +45,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework.authtoken',
     'celery',
-    'django_celery_results'
+    'django_celery_results',
+    'coreapi',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -130,15 +133,15 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_HOST = localconfig.EMAIL_HOST
-EMAIL_HOST_USER = localconfig.EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = localconfig.EMAIL_HOST_PASSWORD
-EMAIL_PORT = localconfig.EMAIL_PORT
-EMAIL_USE_TLS = localconfig.EMAIL_USE_TLS
-EMAIL_BACKEND = localconfig.EMAIL_BACKEND
+EMAIL_HOST = os.environ.get('EMAIL_HOST', localconfig.EMAIL_HOST)
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER',localconfig.EMAIL_HOST_USER)
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', localconfig.EMAIL_HOST_PASSWORD)
+EMAIL_PORT = os.environ.get('EMAIL_PORT', localconfig.EMAIL_PORT)
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', localconfig.EMAIL_USE_TLS)
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', localconfig.EMAIL_BACKEND)
 
 
-CELERY_BROKER_URL = localconfig.CELERY_BROKER_URL
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', localconfig.CELERY_BROKER_URL)
 
 CELERY_ACCEPT_CONTENT = ['json']
 

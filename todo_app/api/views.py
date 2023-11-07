@@ -67,11 +67,18 @@ class Tasks(APIView):
             emessage = "Your task has been created"
             esubject = "Task created"
             ereceiver = [logged_user.email]
-            desired_datetime_str = response_data['to_be_completed']
-            desired_datetime = datetime.strptime(desired_datetime_str, '%Y-%m-%d')
-            desired_datetime = datetime.now()
+            sdate_str = response_data['to_be_completed']
+            sdate = datetime.strptime(sdate_str, '%Y-%m-%d')
+            current_datetime = datetime.now()
+            desired_datetime = datetime(
+                year=sdate.year,
+                month=sdate.month,
+                day=sdate.day,
+                hour=current_datetime.hour,
+                minute=current_datetime.minute,
+                second=current_datetime.second,
+            )
             send_email.apply_async((emessage, esubject, ereceiver), eta=desired_datetime)
-            print(response_data)
             return (response)
         else:
             status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
