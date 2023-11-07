@@ -10,8 +10,14 @@ from datetime import datetime
 # from celery.schedules import schedule
 
 
+class Home(APIView):
+    def get(self, request):
+        response = Sendresponse(True, status.HTTP_200_OK, "DjangoDo API", "Welcome to DjangoDo")
+        return (response)
 class Tasks(APIView):
     # get request
+    serializer_class = TodoSerializer
+
     def get(self, request):
         token = request.COOKIES.get('access_token')
         if not token:
@@ -88,6 +94,8 @@ class Tasks(APIView):
 
 # single class
 class Task(APIView):
+    serializer_class = TodoSerializer
+
     def get(self, request, pk):
         token = request.COOKIES.get('access_token')
         if not token:

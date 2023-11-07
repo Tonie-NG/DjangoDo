@@ -7,6 +7,8 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.db import IntegrityError
 
 class Signup(APIView):
+    serializer_class = UserSerializer
+
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         try:
@@ -28,6 +30,8 @@ class Signup(APIView):
             return response
 
 class Login(APIView):
+    serializer_class = UserSerializer
+
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():

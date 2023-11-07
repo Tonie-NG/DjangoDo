@@ -17,25 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from todo_auth.api.views import Signup, Login
-from rest_framework import permissions
-from drf_yasg import openapi
-from drf_yasg.views import get_schema_view
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from todo_app.api.views import Home
 
 # Swagger documentation setup
-schema_view = get_schema_view(
-    openapi.Info(
-        title="Snippets API",
-        default_version='v1',
-        description="Test description",
-        terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="contact@snippets.local"),
-        license=openapi.License(name="MIT License"),
-    ),
-    public=True,
-    permission_classes=[permissions.AllowAny],
-)
-
 urlpatterns = [
+    path('', Home.as_view(), name='home'),
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('docs/', SpectacularSwaggerView.as_view(url_name='schema')),
     path('admin/', admin.site.urls),
     path('tasks/', include('todo_app.api.urls')),
     path('signup/', Signup.as_view(), name='signup'),

@@ -1,0 +1,300 @@
+openapi: 3.0.3
+info:
+  title: DjangoDo API
+  version: 0.0.0
+  description: A simple to do API
+paths:
+  /login/:
+    post:
+      operationId: login_create
+      tags:
+      - login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /signup/:
+    post:
+      operationId: signup_create
+      tags:
+      - signup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /tasks/:
+    get:
+      operationId: tasks_retrieve
+      tags:
+      - tasks
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+          description: ''
+    post:
+      operationId: tasks_create
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Todo'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Todo'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Todo'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+          description: ''
+  /tasks/{id}:
+    get:
+      operationId: tasks_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tasks
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+          description: ''
+    put:
+      operationId: tasks_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Todo'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Todo'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Todo'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+          description: ''
+    patch:
+      operationId: tasks_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTodo'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTodo'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTodo'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+          description: ''
+    delete:
+      operationId: tasks_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tasks
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    PatchedTodo:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+        description:
+          type: string
+        completed:
+          type: boolean
+        to_be_completed:
+          type: string
+          format: date
+        created_at:
+          type: string
+          format: date
+          readOnly: true
+        updated_at:
+          type: string
+          format: date
+          readOnly: true
+    Todo:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+        description:
+          type: string
+        completed:
+          type: boolean
+        to_be_completed:
+          type: string
+          format: date
+        created_at:
+          type: string
+          format: date
+          readOnly: true
+        updated_at:
+          type: string
+          format: date
+          readOnly: true
+      required:
+      - completed
+      - created_at
+      - description
+      - id
+      - title
+      - to_be_completed
+      - updated_at
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        created_at:
+          type: string
+          format: date
+          readOnly: true
+        updated_at:
+          type: string
+          format: date
+          readOnly: true
+      required:
+      - created_at
+      - email
+      - id
+      - password
+      - updated_at
+      - username
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid

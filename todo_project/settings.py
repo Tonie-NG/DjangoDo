@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'coreapi',
     'drf_yasg',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -146,3 +147,13 @@ CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', localconfig.CELERY_BROKE
 CELERY_ACCEPT_CONTENT = ['json']
 
 CELERY_TASK_SERIALIZER = 'json'
+
+REST_FRAMEWORK = {
+    # YOUR SETTINGS
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'DjangoDo API',
+    'DESCRIPTION': 'A simple to do API',
+}
