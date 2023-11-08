@@ -51,6 +51,10 @@ _Note that the names `django-do` and `todo` are optional and you can replace it 
 
 ## API Endpoints
 
+- Swagger documentation
+
+  - `http://127.0.0.1:8000/docs/` - GET - Access and test out the endpoints in the application via an interactive swagger ui documentaion
+
 - Tasks
 
   - `http://127.0.0.1:8000/tasks` - GET - Retrieve all tasks.
@@ -64,5 +68,7 @@ _Note that the names `django-do` and `todo` are optional and you can replace it 
   - `http://127.0.0.1:8000/tasks/<id>` - PUT- Delete a task using its id.
 
 - User
-  - `http://127.0.0.1:8000/tasks/signup` - POST - Register a new user.
-  - `http://127.0.0.1:8000/tasks/login` - POST - Login using your email, username and password.
+  - `http://127.0.0.1:8000/auth/signup` - POST - Register a new user.
+  - `http://127.0.0.1:8000/auth/login` - POST - Login using your email, username and password.
+  - `http://127.0.0.1:8000/auth/logout` - GET - Logout from the application.
+  -
