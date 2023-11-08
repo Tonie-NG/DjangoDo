@@ -65,3 +65,15 @@ class Login(APIView):
             message = "Internal server error"
             response = Sendresponse(False, status_code, message, serializer.errors)
             return (response)
+
+class Logout(APIView):
+    serializer_class = None
+
+    def get(self, request):
+        if 'access_token' in request.COOKIES:
+            response = Sendresponse(True, 200, "You've logged out successfully.", "")
+            response.delete_cookie('access_token')
+            return (response)
+        else:
+            response = Sendresponse(False, status.HTTP_400_BAD_REQUEST, "You are not logged in", "")
+            return (response)

@@ -11,6 +11,8 @@ from datetime import datetime
 
 
 class Home(APIView):
+    serializer_class = None
+
     def get(self, request):
         response = Sendresponse(True, status.HTTP_200_OK, "DjangoDo API", "Welcome to DjangoDo")
         return (response)

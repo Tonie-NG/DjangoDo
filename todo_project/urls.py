@@ -16,7 +16,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from todo_auth.api.views import Signup, Login
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from todo_app.api.views import Home
 
@@ -27,8 +26,7 @@ urlpatterns = [
     path('docs/', SpectacularSwaggerView.as_view(url_name='schema')),
     path('admin/', admin.site.urls),
     path('tasks/', include('todo_app.api.urls')),
-    path('signup/', Signup.as_view(), name='signup'),
-    path("login/", Login.as_view(), name='login'),
+    path('auth/', include('todo_auth.api.urls'))
 
 
 ]
